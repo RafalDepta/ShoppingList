@@ -8,9 +8,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import pl.depta.rafal.shoppinglist.data.DataManager;
 
 
-public abstract class BaseViewModel<N> extends AndroidViewModel {
+public abstract class BaseViewModel extends AndroidViewModel {
 
-    private N mNavigator;
     private final DataManager mDataManager;
     private final ObservableBoolean mIsLoading = new ObservableBoolean(false);
 
@@ -20,14 +19,6 @@ public abstract class BaseViewModel<N> extends AndroidViewModel {
         super(application);
         this.mDataManager = dataManager;
         this.mCompositeDisposable = new CompositeDisposable();
-    }
-
-    public void setNavigator(N navigator) {
-        this.mNavigator = navigator;
-    }
-
-    public N getNavigator() {
-        return mNavigator;
     }
 
     public DataManager getDataManager() {

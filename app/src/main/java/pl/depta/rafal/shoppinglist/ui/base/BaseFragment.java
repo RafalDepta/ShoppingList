@@ -24,7 +24,6 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends BaseView
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        performDependencyInjection();
         super.onCreate(savedInstanceState);
         mViewModel = getViewModel();
         setHasOptionsMenu(false);
@@ -73,10 +72,6 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends BaseView
         if (mActivity != null) {
             mActivity.hideKeyboard();
         }
-    }
-
-    private void performDependencyInjection() {
-        AndroidSupportInjection.inject(this);
     }
 
     public interface Callback {
