@@ -1,17 +1,13 @@
 package pl.depta.rafal.shoppinglist.ui.main.shopping;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
-import android.view.ViewGroup;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -62,6 +58,7 @@ public class ShoppingListFragment extends BaseFragment<FragmentShoppingListBindi
         }
         setUp();
         subscribeLiveData();
+        initSwipe();
     }
 
     private void setUp() {
@@ -72,6 +69,19 @@ public class ShoppingListFragment extends BaseFragment<FragmentShoppingListBindi
     private void subscribeLiveData() {
         mViewModel.getFullShoppingList().observe(this, fullShoppingList ->
                 mAdapter.setFullShoppingList(fullShoppingList));
+    }
+
+    private void initSwipe() {
+        SwipeToArchiveCallback swipeToDeleteCallback = new SwipeToArchiveCallback(getContext()) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                mAdapter.archiveItem(position);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeToDeleteCallback);
+        itemTouchHelper.attachToRecyclerView(mBinding.shoppingList);
     }
 
     @Override

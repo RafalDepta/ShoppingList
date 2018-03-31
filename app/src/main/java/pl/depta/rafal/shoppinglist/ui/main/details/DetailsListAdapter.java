@@ -27,6 +27,7 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
     @Inject
     DataManager mDataManager;
     private List<ShoppingItem> mShoppingItems;
+    private boolean isArchived;
 
     public DetailsListAdapter(DataManager dataManager) {
         this.mDataManager = dataManager;
@@ -36,12 +37,13 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
         return mShoppingItems;
     }
 
+    public void setIsArchived(boolean isArchived) {
+        this.isArchived = isArchived;
+    }
+
     public void setShoppingItems(List<ShoppingItem> shoppingItems) {
         if (mShoppingItems == null) {
             notifyItemRangeInserted(0, shoppingItems.size());
-        } else {
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffCallback(mShoppingItems, shoppingItems));
-            result.dispatchUpdatesTo(this);
         }
         this.mShoppingItems = shoppingItems;
     }
@@ -63,6 +65,16 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
         return mShoppingItems == null ? 0 : mShoppingItems.size();
     }
 
+    public void insertNewItem(long listId) {
+        ShoppingItem shoppingItem = new ShoppingItem(listId);
+        mShoppingItems.add(shoppingItem);
+        notifyItemInserted(mShoppingItems.size() - 1);
+      /*  mDataManager.insertShoppingItem(shoppingItem)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();*/
+    }
+
 
     class ShoppingItemViewHolder extends RecyclerView.ViewHolder {
         ItemShoppingBinding binding;
@@ -73,11 +85,16 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
         }
 
         void onBind(ShoppingItem shoppingItem) {
-            binding.deleteItem.setOnClickListener(v ->
-                    mDataManager.deleteShoppingItem(shoppingItem)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe());
+            binding.deleteItem.setOnClickListener(v -> {
+
+                notifyItemRemoved(mShoppingItems.indexOf(shoppingItem));
+                mShoppingItems.remove(shoppingItem);
+                mDataManager.deleteShoppingItem(shoppingItem)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe();
+            });
+
             binding.name.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -92,7 +109,6 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
                 @Override
                 public void afterTextChanged(Editable s) {
                     shoppingItem.setName(s.toString());
-
                     mDataManager.updateShoppingItem(shoppingItem)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -108,7 +124,9 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
                         .subscribe();
             });
             binding.setItem(shoppingItem);
+            binding.setIsArchived(isArchived);
             binding.executePendingBindings();
+            binding.getRoot().requestFocus();
         }
 
 

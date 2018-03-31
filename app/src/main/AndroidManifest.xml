@@ -23,11 +23,7 @@
         <activity
             android:name=".ui.main.details.DetailsActivity"
             android:label="@string/title_activity_shopping_details"
-            android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="pl.depta.rafal.shoppinglist.ui.main.MainActivity" />
         </activity>
     </application>
 

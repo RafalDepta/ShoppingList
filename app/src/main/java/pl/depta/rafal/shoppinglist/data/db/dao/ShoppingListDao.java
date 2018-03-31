@@ -32,14 +32,14 @@ public interface ShoppingListDao {
     int deleteShoppingList(ShoppingList shoppingList);
 
     @Transaction
-    @Query("SELECT * FROM ShoppingList WHERE isArchived=0")
+    @Query("SELECT * FROM ShoppingList WHERE isArchived=0 ORDER BY date")
     LiveData<List<FullShopping>> getNoArchivedList();
 
     @Transaction
-    @Query("SELECT * FROM ShoppingList WHERE isArchived=1")
+    @Query("SELECT * FROM ShoppingList WHERE isArchived=1 ORDER BY date")
     LiveData<List<FullShopping>> getArchivedList();
 
     @Transaction
-    @Query("SELECT * FROM ShoppingList WHERE id=:id")
+    @Query("SELECT * FROM ShoppingList WHERE id=:id ORDER BY date")
     FullShopping getFullShoppingListById(long id);
 }

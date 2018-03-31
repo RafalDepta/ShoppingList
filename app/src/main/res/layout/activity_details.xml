@@ -8,6 +8,10 @@
         <variable
             name="name"
             type="String" />
+
+        <variable
+            name="isArchived"
+            type="Boolean" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -44,10 +48,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:enabled="@{!isArchived}"
                     android:gravity="center"
+                    android:text="@{name}"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:textStyle="bold"
-                    android:text="@{name}"
                     app:layout_constraintBottom_toTopOf="@id/details_list"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,6 +72,7 @@
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
                     android:clickable="true"
+                    android:enabled="@{!isArchived}"
                     android:focusable="true"
                     android:padding="10dp"
                     android:src="@drawable/ic_add_grey" />

@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Shopping List</string>
     <string name="list">Shopping list</string>
-    <string name="list_archived">Archived shopping list</string>
+    <string name="list_archived">Archived</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_shopping_details">ShoppingDetails</string>
+    <string name="archived">Archived</string>
 </resources>

@@ -36,7 +36,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     private void setUp() {
-        mBinding.toolbar.setTitle("Noraml");
+        mBinding.toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(mBinding.toolbar);
         loadFragment(ShoppingListFragment.newInstance(Type.SHOPPING));
     }
@@ -46,12 +46,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         Fragment fragment;
         switch (item.getItemId()) {
             case R.id.navigation_list:
-                mBinding.toolbar.setTitle("Noraml");
+                mBinding.toolbar.setTitle(getString(R.string.app_name));
                 fragment = ShoppingListFragment.newInstance(Type.SHOPPING);
                 loadFragment(fragment);
                 return true;
             case R.id.navigation_list_archived:
-                mBinding.toolbar.setTitle("Archived");
+                mBinding.toolbar.setTitle(getString(R.string.archived));
                 fragment = ShoppingListFragment.newInstance(Type.ARCHIVED);
                 loadFragment(fragment);
                 return true;
@@ -71,6 +71,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         getMenuInflater().inflate(R.menu.main, menu);//Menu Resource, Menu
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

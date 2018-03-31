@@ -1,5 +1,6 @@
 package pl.depta.rafal.shoppinglist.ui.main.shopping;
 
+import android.arch.persistence.room.Insert;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
@@ -9,11 +10,19 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import pl.depta.rafal.shoppinglist.R;
+import pl.depta.rafal.shoppinglist.data.DataManager;
 import pl.depta.rafal.shoppinglist.data.db.pojo.FullShopping;
 import pl.depta.rafal.shoppinglist.databinding.ItemShoppingListBinding;
 
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.FullShoppingViewHolder> {
+
+    @Inject
+    DataManager mDataManager;
 
     private List<FullShopping> mFullShoppingList;
     private OnItemClickListener mListener;
@@ -30,6 +39,10 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             result.dispatchUpdatesTo(this);
         }
         mFullShoppingList = fullShoppingList;
+    }
+
+    public ShoppingListAdapter(DataManager dataManager) {
+        this.mDataManager = dataManager;
     }
 
     @NonNull
@@ -56,6 +69,15 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     @Override
     public int getItemCount() {
         return mFullShoppingList == null ? 0 : mFullShoppingList.size();
+    }
+
+    public void archiveItem(int position) {
+        FullShopping fullShopping = mFullShoppingList.get(position);
+        fullShopping.setArchived(true);
+        mDataManager.updateShoppingList(fullShopping)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 
     class FullShoppingViewHolder extends RecyclerView.ViewHolder {

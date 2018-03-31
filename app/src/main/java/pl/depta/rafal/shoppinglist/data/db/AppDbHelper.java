@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import pl.depta.rafal.shoppinglist.data.db.entity.ShoppingItem;
 import pl.depta.rafal.shoppinglist.data.db.entity.ShoppingList;
@@ -60,11 +61,15 @@ public class AppDbHelper implements DbHelper {
 
     @Override
     public Flowable<Integer> updateShoppingList(FullShopping mFullShopping) {
-        return Flowable.fromCallable(()->mAppDatabase.shoppingListDao().updateShoppingList(mFullShopping));
+        return Flowable.fromCallable(() -> mAppDatabase.shoppingListDao().updateShoppingList(mFullShopping));
     }
 
     @Override
     public Flowable<Integer> updateShoppingItem(ShoppingItem shoppingItem) {
-        return Flowable.fromCallable(()->mAppDatabase.shoppingItemDao().updateShoppingItem(shoppingItem));
+        return Flowable.fromCallable(() -> mAppDatabase.shoppingItemDao().updateShoppingItem(shoppingItem));
+    }
+
+    public Completable insertShoppingItems(List<ShoppingItem> shoppingItems) {
+        return Completable.fromAction(() -> mAppDatabase.shoppingItemDao().insertShoppingItems(shoppingItems));
     }
 }

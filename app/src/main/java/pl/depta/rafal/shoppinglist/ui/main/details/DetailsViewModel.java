@@ -2,7 +2,6 @@ package pl.depta.rafal.shoppinglist.ui.main.details;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 
 import java.util.Date;
@@ -31,11 +30,16 @@ public class DetailsViewModel extends BaseViewModel {
         this.mCallbacks = callbacks;
     }
 
+    public long getListId() {
+        return mFullShopping.getId();
+    }
+
     public DetailsViewModel(DataManager dataManager, Application application) {
         super(dataManager, application);
     }
 
     public void insertEmptyShoppingItem() {
+        ShoppingItem shoppingItem = new ShoppingItem(mFullShopping.getId());
         getCompositeDisposable().add(
                 getDataManager().insertShoppingItem(new ShoppingItem(mFullShopping.getId()))
                         .subscribeOn(Schedulers.io())
@@ -49,19 +53,23 @@ public class DetailsViewModel extends BaseViewModel {
         if (id != -1) {
             getFullShopping(id);
         } else {
-            ShoppingList shoppingItems = new ShoppingList(new Date());
-            getCompositeDisposable().add(
-                    getDataManager()
-                            .insertShoppingList(shoppingItems)
-                            .flatMap(listId -> getDataManager().getFullShoppingListById(listId))
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(fullShopping -> {
-                                mFullShopping = fullShopping;
-                                mShoppingItems = getDataManager().getShoppingListByListId(mFullShopping == null ? -1 : mFullShopping.getId());
-                                mCallbacks.onNewList(mFullShopping);
-                            }));
+            createFullShopping();
         }
+    }
+
+    private void createFullShopping() {
+        ShoppingList shoppingItems = new ShoppingList(new Date());
+        getCompositeDisposable().add(
+                getDataManager()
+                        .insertShoppingList(shoppingItems)
+                        .flatMap(listId -> getDataManager().getFullShoppingListById(listId))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(fullShopping -> {
+                            mFullShopping = fullShopping;
+                            mShoppingItems = getDataManager().getShoppingListByListId(mFullShopping == null ? -1 : mFullShopping.getId());
+                            mCallbacks.onNewList(mFullShopping);
+                        }));
     }
 
     private void getFullShopping(long id) {
@@ -79,10 +87,20 @@ public class DetailsViewModel extends BaseViewModel {
 
     public void saveName(String s) {
         mFullShopping.setName(s);
-
+        mFullShopping.setModifyDate(new Date());
         getCompositeDisposable().add(
                 getDataManager()
                         .updateShoppingList(mFullShopping)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe());
+
+    }
+
+    public void save(List<ShoppingItem> shoppingItems) {
+        getCompositeDisposable().add(
+                getDataManager()
+                        .insertShoppingItems(shoppingItems)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe());

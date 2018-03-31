@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import pl.depta.rafal.shoppinglist.data.db.DbHelper;
 import pl.depta.rafal.shoppinglist.data.db.entity.ShoppingItem;
@@ -65,5 +66,10 @@ public class AppDataManager implements DataManager {
     @Override
     public Flowable<Integer> updateShoppingItem(ShoppingItem shoppingItem) {
         return mDbHelper.updateShoppingItem(shoppingItem);
+    }
+
+ @Override
+    public Completable insertShoppingItems(List<ShoppingItem> shoppingItems) {
+        return mDbHelper.insertShoppingItems(shoppingItems);
     }
 }

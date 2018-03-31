@@ -10,6 +10,8 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import pl.depta.rafal.shoppinglist.data.db.entity.ShoppingItem;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
@@ -19,6 +21,9 @@ public interface ShoppingItemDao {
 
     @Insert(onConflict = REPLACE)
     Long insertShoppingItem(ShoppingItem shoppingItem);
+
+    @Insert(onConflict = REPLACE)
+    void insertShoppingItems(List<ShoppingItem> shoppingItems);
 
     @Update(onConflict = REPLACE)
     int updateShoppingItem(ShoppingItem shoppingItem);

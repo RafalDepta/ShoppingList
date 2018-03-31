@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import javax.inject.Inject;
 
@@ -38,9 +39,8 @@ public class DetailsActivity extends BaseActivity<ActivityDetailsBinding, Detail
 
     private void setUp() {
         setSupportActionBar(mBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mBinding.detailsList.setAdapter(mAdapter);
-        mBinding.btnAddNew.setOnClickListener(v -> mViewModel.insertEmptyShoppingItem());
+        mBinding.btnAddNew.setOnClickListener(v -> mAdapter.insertNewItem(mViewModel.getListId()));
 
         mBinding.detailsName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -50,14 +50,21 @@ public class DetailsActivity extends BaseActivity<ActivityDetailsBinding, Detail
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                mViewModel.saveName(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                mViewModel.saveName(s.toString());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        mViewModel.save(mAdapter.getShoppingItems());
+
+        super.onDestroy();
     }
 
     @Override
@@ -96,8 +103,13 @@ public class DetailsActivity extends BaseActivity<ActivityDetailsBinding, Detail
 
     @Override
     public void onNewList(FullShopping fullShopping) {
+        if(fullShopping.isArchived()){
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
+
         mBinding.setName(fullShopping.getName());
-        mViewModel.getShoppingItems().observe(this, shoppingItems ->
-                mAdapter.setShoppingItems(shoppingItems));
+        mBinding.setIsArchived(fullShopping.isArchived());
+        mAdapter.setIsArchived(fullShopping.isArchived());
+        mAdapter.setShoppingItems(fullShopping.shoppingItems);
     }
 }

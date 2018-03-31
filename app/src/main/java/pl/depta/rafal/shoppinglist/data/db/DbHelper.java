@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import pl.depta.rafal.shoppinglist.data.db.entity.ShoppingItem;
 import pl.depta.rafal.shoppinglist.data.db.entity.ShoppingList;
@@ -28,4 +29,6 @@ public interface DbHelper {
     Flowable<Integer> updateShoppingList(FullShopping mFullShopping);
 
     Flowable<Integer> updateShoppingItem(ShoppingItem shoppingItem);
+
+    Completable insertShoppingItems(List<ShoppingItem> shoppingItems);
 }

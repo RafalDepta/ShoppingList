@@ -9,6 +9,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import pl.depta.rafal.shoppinglist.ViewModelProviderFactory;
+import pl.depta.rafal.shoppinglist.annotation.ApplicationContext;
 import pl.depta.rafal.shoppinglist.annotation.PerFragment;
 import pl.depta.rafal.shoppinglist.data.DataManager;
 
@@ -23,8 +24,8 @@ public class ShoppingListModule {
 
     @Provides
     @PerFragment
-    ShoppingListAdapter provideAdapter(){
-        return new ShoppingListAdapter();
+    ShoppingListAdapter provideAdapter(DataManager dataManager){
+        return new ShoppingListAdapter(dataManager);
     }
 
     @Provides

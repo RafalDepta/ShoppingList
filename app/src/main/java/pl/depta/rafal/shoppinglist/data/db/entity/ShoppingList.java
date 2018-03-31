@@ -17,7 +17,7 @@ public class ShoppingList {
     public Date date;
     @TypeConverters(DateConverter.class)
     public Date modifyDate;
-    public String name;
+    public String name = "";
     public boolean isArchived = false;
 
     public ShoppingList() {
